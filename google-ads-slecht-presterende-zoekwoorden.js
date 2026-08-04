@@ -13,7 +13,7 @@
 
 var CONFIG = {
   // Aantal dagen terugkijken vanaf gisteren.
-  DAYS_BACK: 90,
+  DAYS_BACK: 60,
 
   // Een zoekwoord wordt alleen gerapporteerd als het geen conversies heeft
   // ÉN aan minstens één van onderstaande drempels voldoet.
