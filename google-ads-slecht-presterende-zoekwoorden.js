@@ -21,14 +21,14 @@ var CONFIG = {
   MIN_COST: 20, // in accountvaluta
 
   SEND_EMAIL: true,
-  EMAIL_RECIPIENTS: ['macevanleeuwen@hotmail.com'],
+  EMAIL_RECIPIENTS: ['m.vanleeuwen@jobster.com'],
   EMAIL_SUBJECT_PREFIX: 'Google Ads - Slecht presterende zoekwoorden',
 
   // Zet op true om de resultaten ook in een Google Sheet te zetten.
   // Laat SHEET_ID leeg om automatisch een nieuwe sheet aan te maken.
   // Het ID staat in de sheet-URL: .../spreadsheets/d/DIT-STUK/edit...
-  WRITE_TO_SHEET: false,
-  SHEET_ID: ''
+  WRITE_TO_SHEET: true,
+  SHEET_ID: '1L-nJ-di54RZ9w6OL40aniYVVUIcg8TVpyYWV6wIQYn4'
 };
 
 function main() {
