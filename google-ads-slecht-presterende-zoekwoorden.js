@@ -21,7 +21,7 @@ var CONFIG = {
   MIN_COST: 20, // in accountvaluta
 
   SEND_EMAIL: true,
-  EMAIL_RECIPIENTS: ['m.vanleeuwen@jobster.com'],
+  EMAIL_RECIPIENTS: ['m.vanleeuwen@youngcapital.nl'],
   EMAIL_SUBJECT_PREFIX: 'Google Ads - Slecht presterende zoekwoorden',
 
   // Zet op true om de resultaten ook in een Google Sheet te zetten.
