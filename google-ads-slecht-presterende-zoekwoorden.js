@@ -25,9 +25,10 @@ var CONFIG = {
   EMAIL_SUBJECT_PREFIX: 'Google Ads - Slecht presterende zoekwoorden',
 
   // Zet op true om de resultaten ook in een Google Sheet te zetten.
-  // Laat SHEET_URL leeg om automatisch een nieuwe sheet aan te maken.
+  // Laat SHEET_ID leeg om automatisch een nieuwe sheet aan te maken.
+  // Het ID staat in de sheet-URL: .../spreadsheets/d/DIT-STUK/edit...
   WRITE_TO_SHEET: false,
-  SHEET_URL: ''
+  SHEET_ID: ''
 };
 
 function main() {
@@ -102,11 +103,11 @@ function collectPoorKeywords(campaign) {
 }
 
 function writeToSheet(results) {
-  var ss = CONFIG.SHEET_URL
-    ? SpreadsheetApp.openByUrl(CONFIG.SHEET_URL)
+  var ss = CONFIG.SHEET_ID
+    ? SpreadsheetApp.openById(CONFIG.SHEET_ID)
     : SpreadsheetApp.create('Slecht presterende zoekwoorden - ' + formatDate(new Date()));
 
-  if (!CONFIG.SHEET_URL) {
+  if (!CONFIG.SHEET_ID) {
     Logger.log('Nieuwe sheet aangemaakt: ' + ss.getUrl());
   }
 
