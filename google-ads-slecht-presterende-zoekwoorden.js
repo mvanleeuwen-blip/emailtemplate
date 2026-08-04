@@ -12,8 +12,8 @@
  */
 
 var CONFIG = {
-  // Periode om te analyseren: LAST_7_DAYS, LAST_30_DAYS, THIS_MONTH, LAST_MONTH, ...
-  DATE_RANGE: 'LAST_30_DAYS',
+  // Aantal dagen terugkijken vanaf gisteren.
+  DAYS_BACK: 90,
 
   // Een zoekwoord wordt alleen gerapporteerd als het geen conversies heeft
   // ÉN aan minstens één van onderstaande drempels voldoet.
@@ -32,6 +32,7 @@ var CONFIG = {
 };
 
 function main() {
+  var dateRange = getDateRange();
   var results = {};
   var totalFlagged = 0;
 
@@ -41,7 +42,7 @@ function main() {
 
   while (campaignIterator.hasNext()) {
     var campaign = campaignIterator.next();
-    var rows = collectPoorKeywords(campaign);
+    var rows = collectPoorKeywords(campaign, dateRange);
 
     if (rows.length > 0) {
       rows.sort(function(a, b) { return b.cost - a.cost; });
@@ -51,7 +52,7 @@ function main() {
   }
 
   if (totalFlagged === 0) {
-    Logger.log('Geen slecht presterende zoekwoorden gevonden voor ' + CONFIG.DATE_RANGE + '.');
+    Logger.log('Geen slecht presterende zoekwoorden gevonden voor de laatste ' + CONFIG.DAYS_BACK + ' dagen.');
     return;
   }
 
@@ -67,7 +68,21 @@ function main() {
   }
 }
 
-function collectPoorKeywords(campaign) {
+// Google Ads Scripts kent geen ingebouwde "LAST_90_DAYS" periode (alleen
+// tot LAST_30_DAYS), dus we bouwen zelf een custom { min, max } bereik.
+function getDateRange() {
+  var timezone = AdsApp.currentAccount().getTimeZone();
+  var msPerDay = 24 * 60 * 60 * 1000;
+  var end = new Date(Date.now() - msPerDay); // t/m gisteren
+  var start = new Date(end.getTime() - (CONFIG.DAYS_BACK - 1) * msPerDay);
+
+  return {
+    min: Utilities.formatDate(start, timezone, 'yyyyMMdd'),
+    max: Utilities.formatDate(end, timezone, 'yyyyMMdd')
+  };
+}
+
+function collectPoorKeywords(campaign, dateRange) {
   var rows = [];
 
   var keywordIterator = campaign.keywords()
@@ -76,7 +91,7 @@ function collectPoorKeywords(campaign) {
 
   while (keywordIterator.hasNext()) {
     var keyword = keywordIterator.next();
-    var stats = keyword.getStatsFor(CONFIG.DATE_RANGE);
+    var stats = keyword.getStatsFor(dateRange);
 
     var clicks = stats.getClicks();
     var cost = stats.getCost();
@@ -127,7 +142,7 @@ function writeToSheet(results) {
 }
 
 function sendEmailReport(results, totalFlagged) {
-  var periodLabel = CONFIG.DATE_RANGE.replace(/_/g, ' ').toLowerCase();
+  var periodLabel = 'laatste ' + CONFIG.DAYS_BACK + ' dagen';
 
   var html = '<html><body style="font-family:Arial,sans-serif;color:#222;">';
   html += '<h2>Slecht presterende zoekwoorden (' + periodLabel + ')</h2>';
